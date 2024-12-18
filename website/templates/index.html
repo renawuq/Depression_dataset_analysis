@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Boxplot to See Spread of Data</title>
+    <h1>Overview of the Depression Dataset</h1>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <form action="{{ url_for('index') }}" method="POST">
+                <label for="columns">Select factors you would like to see:</label><br>
+                <select name="columns" id="columns" multiple>
+                    <option value="Gender">Gender</option>
+                    <option value="Age">Age</option>
+                    <option value="Work Pressure">Work Pressure</option>
+                    <option value="Job Satisfaction">Job Satisfaction</option>
+                    <option value="Sleep Duration">Sleep Duration</option>
+                    <option value="Dietary Habits">Dietary Habits</option>
+                    <option value="Have you ever had suicidal thoughts ?">Have you ever had suicidal thoughts ?</option>
+                    <option value="Work Hours">Work Hours</option>
+                    <option value="Financial Stress">Financial Stress</option>
+                    <option value="Family History of Mental Illness">Family History of Mental Illness</option>
+                    <option value="Depression">Depression</option>
+                </select><br>
+                <input type="submit" name="action" value="Add Columns" style="font-size: 14px; padding: 8px 12px;">
+            </form>
+        </div>
+
+        <div id="output">
+            {% if selected_columns %}
+                <h3>Selected Columns:</h3>
+                <div class="selected-columns">
+                    {% for col in selected_columns %}
+                        <span class="column-label">{{ col }}</span>
+                    {% endfor %}
+                </div>
+
+                <form action="{{ url_for('index') }}" method="POST">
+                    <input type="submit" name="action" value="Delete All" class="delete-btn">
+                </form>
+
+                <div class="plot-container">
+                    <div class="plot-image">{{ boxplot_output | safe }}</div>
+                </div>
+                <pre>{{ outliers_output }}</pre>
+            {% endif %}
+        </div>
+
+        <div class="links-container">
+            <p>Data Source: Kaggle website: Depression Professional Dataset</p>
+            <a href="/analyze">Click here to see the Analyze</a>
+            <br>
+            <a href="/barplot">Click here to see the barplot</a>
+            <br>
+            <a href="/KNN_model">Click here to see the KNN model result</a>
+            <br>
+            <a href="/LR_model">Click here to see the LR model result</a>
+            <br>
+            <a href="/">Home</a>
+            <br>
+
+        </div>
+    </div>
+</body>
+</html>

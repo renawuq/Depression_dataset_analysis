@@ -1,0 +1,4 @@
+Age,Work Pressure,Job Satisfaction,Sleep Duration,Dietary Habits,Have you ever had suicidal thoughts ?,Work Hours,Financial Stress,Family History of Mental Illness,Depression
+24,1.0,3.0,less than 5 hours,healthy,No,9,1,Yes,No
+24,1.0,5.0,less than 5 hours,healthy,Yes,10,1,Yes,No
+18,1.0,4.0,less than 5 hours,healthy,No,0,1,Yes,No

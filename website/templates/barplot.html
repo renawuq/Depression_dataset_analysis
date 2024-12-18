@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <h2>Overview of number of people with depression</h2>
+    <script>
+        $(document).ready(function () {
+            // Data for the bar plot
+            let data = [{
+                "x": {{ depression_labels | tojson }},
+                "y": {{ depression_values | tojson }},
+                "type": "bar"
+            }];
+
+            console.log(data);  // Add this line to check the data
+
+            let layout = {
+                "title": "Depression Counts",
+                "xaxis": { "title": "Depression (Yes/No)" },
+                "yaxis": { "title": "Count" }
+            };
+
+            Plotly.newPlot("myGraph", data, layout);
+        });
+    </script>
+
+<body>
+    <br>
+    <p>Data Source: Kaggle website: Depression Professional Dataset</p>
+    <div id="myGraph"></div>  <!-- Plotly graph will be rendered here -->
+
+    <a href="/analyze">Click here to see the Analyze</a>
+    <br>
+    <a href="/barplot">Click here to see the barplot</a>
+    <br>
+    <a href="/KNN_model">Click here to see the KNN model result</a>
+    <br>
+    <a href="/LR_model">Click here to see the LR model result</a>
+    <br>
+    <a href="/">Home</a>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNN Model Prediction</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Enter your details for Depression Prediction using KNN</h1>
+    <form method="POST" action="/KNN_model">
+        <label for="gender">Gender:</label>
+        <select name="gender" id="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select><br>
+
+        <label for="age">Age:</label>
+        <input type="number" name="age" id="age" required><br>
+
+        <label for="work_pressure">Work Pressure (1-5):</label>
+        <input type="number" name="work_pressure" id="work_pressure" min="1" max="5" required><br>
+
+        <label for="job_satisfaction">Job Satisfaction (1-5):</label>
+        <input type="number" name="job_satisfaction" id="job_satisfaction" min="1" max="5" required><br>
+
+        <label for="sleep_duration">Sleep Duration:</label>
+        <select name="sleep_duration" id="sleep_duration" required>
+            <option value="less than 5 hours">Less than 5 hours</option>
+            <option value="5-6 hours">5-6 hours</option>
+            <option value="7-8 hours">7-8 hours</option>
+            <option value="more than 8 hours">More than 8 hours</option>
+        </select><br>
+
+        <label for="dietary_habits">Dietary Habits:</label>
+        <select name="dietary_habits" id="dietary_habits" required>
+            <option value="unhealthy">Unhealthy</option>
+            <option value="moderate">Moderate</option>
+            <option value="healthy">Healthy</option>
+        </select><br>
+
+        <label for="suicidal_thoughts">Have you ever had suicidal thoughts?</label>
+        <select name="suicidal_thoughts" id="suicidal_thoughts" required>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select><br>
+
+        <label for="work_hours">Work Hours (per day):</label>
+        <input type="number" name="work_hours" id="work_hours" required><br>
+
+        <label for="financial_stress">Financial Stress (1-5):</label>
+        <input type="number" name="financial_stress" id="financial_stress" min="1" max="5" required><br>
+
+        <label for="family_history">Family History of Mental Illness:</label>
+        <select name="family_history" id="family_history" required>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select><br>
+
+        <label for="k_neighbors">K (Number of Neighbors):</label>
+        <input type="number" name="k_neighbors" id="k_neighbors" min="1" required><br>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction is not none %}
+    <h2>Prediction Result:</h2>
+    <p>
+        <div style="background-color: {% if prediction == 'Depressed' %}red{% else %}green{% endif %}; 
+        color: white; 
+        padding: 20px; 
+        margin: 10px auto; 
+        width: 50%; 
+        text-align: center; 
+        border-radius: 10px;">
+        The prediction is: 
+        <strong>
+            {{ prediction }} {% if prediction == 'Depressed' %} 😟 {% else %} 😊 {% endif %}
+        </strong>
+        <br>
+        <img id="resultImage" src="{{ url_for('static', filename=image_path) }}" style="display: block; margin: 10px auto; max-width: 100%; max-height: 200px;">
+        </div>
+
+    </p>
+    {% endif %}
+
+    <h2>Model Performance</h2>
+    <canvas id="accuracyChart" width="400" height="200"></canvas>
+    <script>
+        const ctx = document.getElementById('accuracyChart').getContext('2d');
+        const accuracyData = {{ accuracy_data|tojson }};
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: accuracyData.labels,
+                datasets: [{
+                    label: 'Model Accuracy',
+                    data: accuracyData.values,
+                    backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)', 
+                    'rgba(54, 162, 235, 0.2)'  
+                    ],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <p>Data Source: Kaggle website: Depression Professional Dataset</p>
+    <a href="/analyze">Click here to see the Analyze</a>
+    <br>
+    <a href="/barplot">Click here to see the barplot</a>
+    <br>
+    <a href="/KNN_model">Click here to see the KNN model result</a>
+    <br>
+    <a href="/LR_model">Click here to see the LR model result</a>
+    <br>
+    <a href="/">Home</a>
+    <br>
+</body>
+
+</html>

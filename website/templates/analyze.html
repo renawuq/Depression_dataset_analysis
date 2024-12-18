@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            loadPCAPlot();
+
+            function loadPCAPlot() {
+                $.get("/pca_data", function(data) {
+                    let plotData = [{
+                        "x": data.x,
+                        "y": data.y,
+                        "mode": "markers",
+                        "type": "scatter",
+                        "text": data.text,
+                        "hoverinfo": "text",
+                        "marker": {
+                            "color": data.color.map(val => val === 'Depression' ? 'red' : 'blue')
+                        }
+                    }];
+
+                    let layout = {
+                        "title": "PCA of Employee Mental Health Dataset",
+                        "xaxis": { "title": "Principal Component 1" },
+                        "yaxis": { "title": "Principal Component 2" }
+                    };
+
+                    Plotly.newPlot("myGraph", plotData, layout);
+
+                    document.getElementById("myGraph").on("plotly_click", function (eventData) {
+                        let pointIndex = eventData.points[0].pointIndex; 
+                        fetch(`/api/person/${pointIndex}`)
+                            .then(response => response.json())
+                            .then(function (personData) {
+                                let details = `
+                                    <h3>Person Details</h3>
+                                    <p><strong>Gender:</strong> ${personData.gender}</p>
+                                    <p><strong>Age:</strong> ${personData.age}</p>
+                                    <p><strong>Work Pressure:</strong> ${personData.workPressure}</p>
+                                    <p><strong>Job Satisfaction:</strong> ${personData.jobSatisfaction}</p>
+                                    <p><strong>Sleep Duration:</strong> ${personData.sleepDuration}</p>
+                                    <p><strong>Dietary Habits:</strong> ${personData.dietaryHabits}</p>
+                                    <p><strong>Suicidal Thoughts:</strong> ${personData.suicidalThoughts}</p>
+                                    <p><strong>Work Hours:</strong> ${personData.workHours}</p>
+                                    <p><strong>Financial Stress:</strong> ${personData.financialStress}</p>
+                                    <p><strong>Family History of Mental Illness:</strong> ${personData.familyHistory}</p>
+                                    <p><strong>Depression:</strong> ${personData.depression}</p>
+                                `;
+                                document.getElementById("details").innerHTML = details;
+                            });
+                    });
+                });
+            }
+        });
+    </script>
+    <style>
+        #myGraph {
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        #details {
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Click on a point to see the detailed information about the person.</h2>
+    <div id="myGraph"></div>
+    <div id="details"></div>
+    <hr />
+    <p>Data Source: Kaggle website: Depression Professional Dataset</p>
+    <a href="/analyze">Click here to see the Analyze</a>
+    <br>
+    <a href="/barplot">Click here to see the barplot</a>
+    <br>
+    <a href="/KNN_model">Click here to see the KNN model result</a>
+    <br>
+    <a href="/LR_model">Click here to see the LR model result</a>
+    <br>
+    <a href="/">Home</a>
+    <br>
+</body>
+</html>
